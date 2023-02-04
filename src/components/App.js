@@ -1,15 +1,23 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
 import Header from './Header';
 import Diary from './Diary';
+import Tips from './Tips';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NavBar from './NavBar';
 
 
 function App() {
   return (
     <BrowserRouter>
       <Header />
-      <Route path="/" element={<Diary />} />
+      <main className="content">
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Diary />} />
+          <Route path="/tips" element={<Tips />} />
+        </Routes>
+      </main>
     </BrowserRouter>
   );
 }
