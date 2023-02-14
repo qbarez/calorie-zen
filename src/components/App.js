@@ -7,11 +7,13 @@ import Register from './Register';
 import Login from './Login';
 import NavBar from './NavBar';
 import * as auth from '../auth.js';
+import * as calData from '../data';
 import './styles/App.css';
 import ProtectedRouteElement from "./ProtectedRoute";
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [calGoal, setCalGoal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,17 +21,26 @@ const App = () => {
   }, [])
 
   const handleTokenCheck = () => {
-    if (localStorage.getItem('jwt'))
-    {
+    if (localStorage.getItem('jwt')){
       const jwt = localStorage.getItem('jwt');
       auth.checkToken(jwt).then((res) => {
-    if (res){
-      setLoggedIn(true);
-      navigate("/diary", {replace: true})}   
-    });
+        let calGoal = 0;
+        // найдём выбранное пользователем количество калорий
+        // из списка возможных целей
+        calData.calData.forEach((goal) => {
+          if (goal.id === res.ru_cal_goal){
+            // цель, выбранная пользователем
+            calGoal = goal.calGoal;
+          }
+        })
+        if (res){
+          setLoggedIn(true);
+          setCalGoal(calGoal);
+          navigate("/diary", {replace: true})
+        }
+      });
     }
   }
-
   const handleLogin = () => {
     setLoggedIn(true);
   }
@@ -40,7 +51,7 @@ const App = () => {
         {loggedIn && <NavBar />}
         <Routes>
           <Route path="/" element={loggedIn ? <Navigate to="/diary" replace /> : <Navigate to="/login" replace />} />
-          <Route path="/diary" element={<ProtectedRouteElement element={<Diary/>} loggedIn={loggedIn}/>} />
+          <Route path="/diary" element={<ProtectedRouteElement element={<Diary calGoal={calGoal}/>} loggedIn={loggedIn}/>} />
           <Route path="/tips" element={<ProtectedRouteElement element={<Tips/>} loggedIn={loggedIn}/>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />

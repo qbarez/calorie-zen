@@ -7,8 +7,10 @@ class Diary extends React.Component {
     super(props);
     this.state = {
       foodList: [],
-      calorieTotal: 0
+      calorieTotal: 0,
+      calGoal: calGoal
     };
+    
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit = (food, calories) => {
@@ -17,7 +19,6 @@ class Diary extends React.Component {
     newList.push({food, calories});
     // получаем сумму калорий
     newList.forEach((entry) => {
-      console.log(typeof(entry.calories));
       calorieTotal = calorieTotal + parseInt(entry.calories);
     });
     this.setState({
@@ -29,6 +30,7 @@ class Diary extends React.Component {
     return (
       <div className="diary">
         <div className="calories">
+          <h2>Цель на день: {this.props.calGoal}</h2>
           <h2>Калории: {this.state.calorieTotal}</h2>
           <ul className="calories__list">
             {this.state.foodList.map((food, i) => {
