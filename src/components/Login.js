@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import * as auth from '../auth.js';
 import './styles/Login.css';
 
-const Login = () => {
+const Login = ({handleLogin}) => {
   const [formValue, setFormValue] = useState({
     username: '',
     password: ''
   })
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -19,7 +20,6 @@ const Login = () => {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
-    // здесь нужно будет добавить логин
     if (!formValue.username || !formValue.password){
       return;
     }

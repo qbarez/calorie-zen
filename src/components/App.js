@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, Navigate, useNavigate} from 'react-router-dom';
 import Header from './Header';
 import Diary from './Diary';
 import Tips from './Tips';
@@ -12,13 +12,29 @@ import ProtectedRouteElement from "./ProtectedRoute";
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    handleTokenCheck();
+  }, [])
+
+  const handleTokenCheck = () => {
+    if (localStorage.getItem('jwt'))
+    {
+      const jwt = localStorage.getItem('jwt');
+      auth.checkToken(jwt).then((res) => {
+    if (res){
+      setLoggedIn(true);
+      navigate("/diary", {replace: true})}   
+    });
+    }
+  }
 
   const handleLogin = () => {
     setLoggedIn(true);
   }
-
   return (
-    <BrowserRouter>
+    <>
       <Header />
       <main className="content">
         {loggedIn && <NavBar />}
@@ -30,7 +46,7 @@ const App = () => {
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />
         </Routes>
       </main>
-    </BrowserRouter>
+    </>
   );
 }
 
